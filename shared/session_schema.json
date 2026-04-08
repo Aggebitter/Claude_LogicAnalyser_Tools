@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LogicAnalyserSession",
+  "type": "object",
+  "properties": {
+    "device": { "type": ["string", "null"], "description": "Connected analyser device name" },
+    "backend": { "type": ["string", "null"], "enum": ["logic2", "sigrok", null] },
+    "channels": {
+      "type": "object",
+      "description": "Map of channel index to label",
+      "additionalProperties": { "type": "string" }
+    },
+    "protocol": { "type": ["string", "null"], "description": "Identified protocol" },
+    "sample_rate": { "type": ["integer", "null"] },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "type": { "type": "string", "enum": ["timing", "logic", "protocol"] },
+          "params": { "type": "object" }
+        },
+        "required": ["id", "description", "type", "params"]
+      }
+    },
+    "captures": {
+      "type": "object",
+      "properties": {
+        "baseline": { "type": ["string", "null"], "description": "Path to baseline capture file" },
+        "latest": { "type": ["string", "null"], "description": "Path to latest capture file" }
+      }
+    }
+  }
+}
