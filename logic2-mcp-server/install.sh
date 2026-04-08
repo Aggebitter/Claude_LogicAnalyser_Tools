@@ -5,9 +5,14 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VENV="$SCRIPT_DIR/.venv"
+
+echo "[logic2-mcp-server] Creating virtual environment..."
+python3 -m venv "$VENV"
 
 echo "[logic2-mcp-server] Installing Python dependencies..."
-pip3 install -r "$SCRIPT_DIR/requirements.txt"
+"$VENV/bin/pip" install --quiet --upgrade pip
+"$VENV/bin/pip" install -r "$SCRIPT_DIR/requirements.txt"
 
 echo "[logic2-mcp-server] Installing skill files..."
 mkdir -p ~/.claude/skills
@@ -20,4 +25,4 @@ echo ""
 echo "Next steps:"
 echo "  1. Ensure Logic 2 is running before starting a session"
 echo "  2. Add to ~/.claude/settings.json:"
-echo '     "logic2": { "command": "python3", "args": ["'"$SCRIPT_DIR"'/server.py"] }'
+echo '     "logic2": { "command": "'"$VENV"'/bin/python3", "args": ["'"$SCRIPT_DIR"'/server.py"] }'

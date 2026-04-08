@@ -22,7 +22,6 @@ from pathlib import Path
 _HERE = Path(__file__).parent
 sys.path.insert(0, str(_HERE / "backend"))
 sys.path.insert(0, str(_HERE.parent / "shared"))
-sys.path.insert(0, str(_HERE.parent / "logic2-mcp-server" / "backend"))
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
