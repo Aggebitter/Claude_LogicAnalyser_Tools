@@ -73,16 +73,23 @@ static void timer1_pwm_init(void)
 }
 
 /* ── Timer2 — ~8 kHz clock on D3 (OC2B) ─────────────────
- * CTC mode, toggle OC2B on compare match, prescaler=8
- * F_toggle = 16MHz / (2 * 8 * (OCR2B+1))
- * For 8 kHz: OCR2B = 16000000/(2*8*8000) - 1 = 124
+ * CTC mode: OCR2A defines TOP (counter resets here).
+ * OC2B toggles once per counter period → output period = 2 × counter period.
+ *
+ * f_out = F_CPU / (2 × prescaler × (OCR2A+1))
+ * For 8 kHz: OCR2A = 16MHz/(2×8×8000) − 1 = 124
+ * 50% duty:  OCR2B = OCR2A/2 = 62
+ *
+ * Bug fix: OCR2A MUST be set — it defaults to 0x00 after reset,
+ * which causes the counter to reset every tick and OCR2B never fires.
  */
 static void timer2_clock_init(void)
 {
     TCCR2A = (1 << COM2B0)   /* Toggle OC2B on compare match */
-           | (1 << WGM21);   /* CTC mode */
+           | (1 << WGM21);   /* CTC mode, TOP = OCR2A */
     TCCR2B = (1 << CS21);    /* Prescaler = 8 */
-    OCR2B  = 124;
+    OCR2A  = 124;             /* TOP — defines frequency */
+    OCR2B  = 62;              /* Toggle point — 50% duty cycle */
     pinMode(PIN_CLOCK, OUTPUT);
 }
 
